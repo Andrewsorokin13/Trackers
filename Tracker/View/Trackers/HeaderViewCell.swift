@@ -29,6 +29,5 @@ final class HeaderViewCell: UICollectionReusableView {
         title.heightAnchor.constraint(equalToConstant: 20).isActive = true
         title.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
-    
-    
+
 }

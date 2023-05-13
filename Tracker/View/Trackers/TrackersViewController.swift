@@ -141,14 +141,12 @@ final class TrackersViewController: UIViewController {
         if category.isEmpty {
             showNotificationView(imagename: "emptyCollection", title: "Что будем отслеживать?")
         }else if filteredСategories.isEmpty  {
-            showNotificationView(imagename: "emptyCollection", title: "Ничего не найдено")
+            showNotificationView(imagename: "emptyFilterCollection", title: "Ничего не найдено")
         } else  {
             notificationView.isHidden = true
         }
     }
-    
-    
-    
+  
     private func showNotificationView(imagename: String, title: String) {
         notificationView.isHidden = false
         infoImageView.image = UIImage(named: imagename)
