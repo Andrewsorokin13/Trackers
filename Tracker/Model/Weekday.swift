@@ -1,23 +1,47 @@
 import Foundation
 
-enum Weekday: String {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
+enum Weekday: CaseIterable {
+    case Monday
+    case Tuesday
+    case Wednesday
+    case Thursday
+    case Friday
+    case Saturday
+    case Sunday
     
-    var name: String {
+    var fullName: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .Monday: return "Понедельник"
+        case .Tuesday: return "Вторник"
+        case .Wednesday: return "Среда"
+        case .Thursday: return "Четверг"
+        case .Friday: return "Пятница"
+        case .Saturday: return "Суббота"
+        case .Sunday: return "Воскресенье"
+        }
+    }
+    
+    var weekNumber: Int {
+        switch self {
+        case .Monday: return 1
+        case .Tuesday: return 2
+        case .Wednesday: return 3
+        case .Thursday: return 4
+        case .Friday: return 5
+        case .Saturday: return 6
+        case .Sunday: return 7
+        }
+    }
+    var shortName: String {
+        switch self {
+        case .Monday: return "Пн"
+        case .Tuesday: return "Вт"
+        case .Wednesday: return "Ср"
+        case .Thursday: return "Чт"
+        case .Friday: return "Пт"
+        case .Saturday: return "Сб"
+        case .Sunday: return "Вс"
         }
     }
 }
+

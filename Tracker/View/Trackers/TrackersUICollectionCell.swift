@@ -77,7 +77,7 @@ final class TrackersUICollectionCell: UICollectionViewCell {
         }
     }
     
-    func cellConfigurate(tracker: Tracker, isComplete: Bool, indexPath: IndexPath) {
+    func cellConfigurate(tracker: Tracker, isComplete: Bool, indexPath: IndexPath, completedDay: Int) {
         addUIElemets()
         setconstraints()
         self.trackerID = tracker.id
@@ -89,15 +89,31 @@ final class TrackersUICollectionCell: UICollectionViewCell {
         plusButton.backgroundColor = taskBackgroundColor
         reminderLabel.text = tracker.title
         emojiLabel.text = tracker.emoji ?? ""
+        
         let day = (1...5).randomElement()
         
-        dayLabel.text = "\(day!) дней"
+        dayLabel.text = nameDays(completedDay)
+        
         let image = isComleteReminder ? UIImage(systemName: "checkmark") : UIImage(systemName: "plus")
+        let alpha = isComleteReminder ? 0.5 : 1
         plusButton.setImage(image, for: .normal)
+        plusButton.alpha = alpha
     }
     
+    private func nameDays(_ count: Int) -> String {
+      let singular = count % 10
+      let plural = count % 100
+    
+        if singular == 1 && plural != 11 {
+            return "\(count) день"
+        } else if singular >= 2 && singular <= 4 {
+            return "\(count) дня"
+        } else {
+            return "\(count) дней"
+        }
+    }
+   
 }
-
 
 //MARK: - Set UI elements
 private extension TrackersUICollectionCell {

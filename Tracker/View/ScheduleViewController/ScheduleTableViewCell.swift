@@ -19,28 +19,29 @@ final class ScheduleTableViewCell: UITableViewCell {
         let switchView = UISwitch(frame: .zero)
         switchView.translatesAutoresizingMaskIntoConstraints = false
         switchView.setOn(false, animated: true)
+        switchView.onTintColor = .YPBlue
         switchView.addTarget(self, action: #selector(self.switchChanged), for: .valueChanged)
         return switchView
     }()
     
     //MARK: - Delegate
     weak var delegate: ScheduleTableViewCellDelegate?
+    private var currentWeekday: Weekday = Weekday.Friday
     
     //MARK: - Internal func Configuration Cell
-    func configurationCell(title: String) {
+    func configurationCell(title: Weekday) {
         addUIElements()
         setConstraints()
-        titleLabel.text = title
+        titleLabel.text = title.fullName
+        self.currentWeekday = title
     }
     
     @objc
     private func switchChanged(_ sender : UISwitch) {
-        guard let text = titleLabel.text else { return }
-        guard let day = Weekday(rawValue: text)?.name else { return }
         if sender.isOn {
-            delegate?.saveWeekDay(day: day)
+            delegate?.saveWeekDay(day: currentWeekday)
         } else {
-            delegate?.deleteWeekDay(day: day)
+            delegate?.deleteWeekDay(day: currentWeekday)
         }
     }
 }

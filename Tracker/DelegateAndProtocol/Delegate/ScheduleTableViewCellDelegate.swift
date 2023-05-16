@@ -1,6 +1,6 @@
 import Foundation
 
 protocol ScheduleTableViewCellDelegate: AnyObject {
-    func saveWeekDay(day: String)
-    func deleteWeekDay(day: String)
+    func saveWeekDay(day: Weekday)
+    func deleteWeekDay(day: Weekday)
 }

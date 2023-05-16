@@ -1,5 +1,10 @@
 import UIKit
 
+protocol ReloadCoolectionView: AnyObject {
+    func reloadCollection()
+}
+
+
 final class CreateTracker: UIViewController {
     
     //MARK: - UI elements
@@ -39,7 +44,6 @@ final class CreateTracker: UIViewController {
 //        present(navigationVC, animated: true)
     }
 }
-
 
 //MARK: - Set constraints
 private extension CreateTracker {
