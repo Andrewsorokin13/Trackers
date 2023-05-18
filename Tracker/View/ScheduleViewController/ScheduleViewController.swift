@@ -81,6 +81,7 @@ private extension ScheduleViewController {
         scheduleTableView.delegate = self
         scheduleTableView.rowHeight = 75
         scheduleTableView.backgroundColor = .YPWhiteDay
+        scheduleTableView.allowsSelection = false
     }
     
     private func addUIElement() {

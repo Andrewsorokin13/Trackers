@@ -18,7 +18,7 @@ final class RegularWontTextFieldCell: UITableViewCell {
         return view
     }()
     
-    weak var delegate: SaveTitleReminder?
+    weak var delegate: SaveTitleReminderDelegate?
 
     //MARK: - Internal func Configuration Cell
     func configurationCell() {

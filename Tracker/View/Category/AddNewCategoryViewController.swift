@@ -1,6 +1,7 @@
 import UIKit
 
-class CategoryViewController: UIViewController {
+final class  AddNewCategoryViewController: UIViewController {
+    
     //MARK: - UI Elements
     private lazy var textFieldBackgroundView: UIView = {
         let view = UIView()
@@ -35,11 +36,11 @@ class CategoryViewController: UIViewController {
     }()
     
     //MARK: - Delegate
-    weak var delegate: SaveCategoryDelegate?
+    weak var delegate: AddNewCategoryDelegate?
     
     @objc
     private func saveCategory() {
-        delegate?.saveCategory(category: categoryTextfield.text)
+        delegate?.addNewCategoryToListCategory(category: categoryTextfield.text)
         dismiss(animated: true)
     }
     
@@ -51,16 +52,16 @@ class CategoryViewController: UIViewController {
 }
 
 //MARK: - Conform UITextFieldDelegate
-extension CategoryViewController: UITextFieldDelegate {
+extension AddNewCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-    
+
 }
 
 //MARK: - Set UI elements
-private extension CategoryViewController {
+private extension AddNewCategoryViewController {
     private func addUIElement() {
         view.backgroundColor = .YPWhiteDay
         view.addSubview(textFieldBackgroundView)
@@ -89,4 +90,5 @@ private extension CategoryViewController {
             completeButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
+    
 }

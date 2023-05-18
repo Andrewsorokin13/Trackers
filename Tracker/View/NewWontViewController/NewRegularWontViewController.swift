@@ -96,19 +96,25 @@ final class NewRegularWontViewController: UIViewController{
     }
 }
 
-//MARK: - Conform SaveScheduleListDelegate & SaveCategoryDelegate
-extension NewRegularWontViewController: SaveScheduleListDelegate, SaveCategoryDelegate {
-    func saveCategory(category: String?) {
-        self.setCategory = category ?? "New category"
-        tableView.reloadData()
-    }
+//MARK: - Conform SaveScheduleListDelegate &
+extension NewRegularWontViewController: SaveScheduleListDelegate {
     func saveSchedule(category: [Weekday]) {
         scheduleArray = category
         tableView.reloadData()
     }
 }
 
-extension NewRegularWontViewController: SaveTitleReminder {
+//MARK: - Conform SaveCategoryDelegate
+extension NewRegularWontViewController: SaveCategoryDelegate {
+    func saveNewCategory(category: String?) {
+        guard let category = category else { return }
+        self.setCategory = category
+        tableView.reloadData()
+    }
+}
+
+//MARK: - Conform SaveTitleReminderDelegate
+extension NewRegularWontViewController: SaveTitleReminderDelegate {
     func saveTitle(title: String?) {
         self.textInTextField = title ?? "No title"
     }
@@ -141,7 +147,9 @@ extension NewRegularWontViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectVCForIndexPath(indexPath: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         main.count
@@ -154,7 +162,7 @@ extension NewRegularWontViewController: UITableViewDelegate, UITableViewDataSour
             let navigationVC = UINavigationController(rootViewController: vc)
             present(navigationVC, animated: true)
         }else {
-            let vc = CategoryViewController()
+            let vc = ListCategoryViewController()
             vc.delegate = self
             let navigationVC = UINavigationController(rootViewController: vc)
             present(navigationVC, animated: true)

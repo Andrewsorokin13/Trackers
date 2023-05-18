@@ -48,7 +48,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var addTrackerButton: UIButton = {
-        let button = UIButton.systemButton(with: UIImage(systemName: "plus")!, target: self, action: #selector(addNewTracker))
+        let button = UIButton.systemButton(with: UIImage(named: "customPlusButton")!, target: self, action: #selector(addNewTracker))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .YPBlackDay
         return button
@@ -124,7 +124,6 @@ final class TrackersViewController: UIViewController {
                                                                             queue: .main,
                                                                             using: { [weak self ] _ in
             guard let self = self else { return }
-            self.filteredСategories = mocManager.readTrackerCategory()
             self.reloadData()
         })
         isNotification()
@@ -139,7 +138,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func filterselectDate() {
-        filterCategpry()
+        filterCategory()
     }
     
     private func isNotification() {
@@ -163,20 +162,18 @@ final class TrackersViewController: UIViewController {
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        filterCategpry()
-        
+        filterCategory()
         return true
     }
     
-    private func filterCategpry() {
+    private func filterCategory() {
         let calendar = Calendar.current
         let selectDay = calendar.component(.weekday, from: datePicker.date)
         let text = searchTextField.text?.lowercased() ?? ""
         
         filteredСategories = category.compactMap { category in
-            let tracker = category.tracer.filter { tracker in
+            let tracker = category.tracker.filter { tracker in
                 let filterTextField = text.isEmpty || tracker.title.lowercased().contains(text)
-                
                 let filterDatePicker = tracker.schedule?.contains{
                     $0.weekNumber == selectDay
                 } == true
@@ -189,7 +186,7 @@ extension TrackersViewController: UITextFieldDelegate {
             }
             
             return  TrackerCategory(header: category.header,
-                                    tracer: tracker )
+                                    tracker: tracker )
         }
         collectionView.reloadData()
         isNotification()
@@ -227,13 +224,13 @@ extension TrackersViewController {
 //MARK: - Conform UICollectionViewDelegate & UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredСategories[section].tracer.count
+        return filteredСategories[section].tracker.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersUICollectionCell.reuseIdentifier, for: indexPath) as? TrackersUICollectionCell
         else { return UICollectionViewCell() }
-        let data = filteredСategories[indexPath.section].tracer
+        let data = filteredСategories[indexPath.section].tracker
         let tracker = data[indexPath.row]
         let completedDay = completedTrackers.filter{ $0.id == tracker.id}.count
         cell.delegate = self
@@ -246,7 +243,7 @@ extension TrackersViewController: UICollectionViewDelegate, UICollectionViewData
             return UICollectionReusableView()
         }
         let title = filteredСategories[indexPath.section].header
-        header.configurateHeader(header: title) 
+        header.configurateHeader(header: title)
         return header
     }
     
@@ -276,8 +273,9 @@ extension TrackersViewController: TrackerCellDelegate {
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / 2.2
-        return CGSize(width: width , height: 180)
+        return CGSize(width: width , height: 132)
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let width = collectionView.frame.width
         return CGSize(width: width, height: 30)
@@ -316,12 +314,12 @@ private extension TrackersViewController {
             headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
             
             //Add Tracker Button
-            addTrackerButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 4),
+            addTrackerButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             addTrackerButton.topAnchor.constraint(equalTo: headerView.topAnchor),
             
             //Header Title Lable
             titleLable.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-            titleLable.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 8),
+            titleLable.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 13),
             
             //Date Picker
             datePicker.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
@@ -333,7 +331,7 @@ private extension TrackersViewController {
             SearchHorizontalStackView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             SearchHorizontalStackView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
             SearchHorizontalStackView.heightAnchor.constraint(equalToConstant: 30),
-            SearchHorizontalStackView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 2),
+            SearchHorizontalStackView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 7),
             
             //CollectionView
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

@@ -22,6 +22,7 @@
 		AF679CEB2A07D196009C0C52 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF679CEA2A07D196009C0C52 /* CategoryTableViewCell.swift */; };
 		AF679CED2A07F5F5009C0C52 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF679CEC2A07F5F5009C0C52 /* ScheduleViewController.swift */; };
 		AF679CF12A0B021F009C0C52 /* SectionHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF679CF02A0B021F009C0C52 /* SectionHeaderReusableView.swift */; };
+		AF75B88A2A16502B004E8056 /* AddNewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF75B8892A16502B004E8056 /* AddNewCategoryViewController.swift */; };
 		AFA5128E2A0BB7EA005F5DDB /* EmojiCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA5128D2A0BB7EA005F5DDB /* EmojiCollectionCell.swift */; };
 		AFA512902A0BBA69005F5DDB /* ColorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA5128F2A0BBA69005F5DDB /* ColorCollectionCell.swift */; };
 		AFA512922A0BE953005F5DDB /* CategoryCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512912A0BE953005F5DDB /* CategoryCollectionCell.swift */; };
@@ -35,7 +36,7 @@
 		AFA512A62A0E3B8D005F5DDB /* Weekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512A52A0E3B8D005F5DDB /* Weekday.swift */; };
 		AFA512A82A0E574D005F5DDB /* ScheduleTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512A72A0E574D005F5DDB /* ScheduleTableViewCellDelegate.swift */; };
 		AFA512AA2A0E577C005F5DDB /* SaveScheduleListDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512A92A0E577C005F5DDB /* SaveScheduleListDelegate.swift */; };
-		AFA512AC2A0E59DC005F5DDB /* SaveCategoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512AB2A0E59DC005F5DDB /* SaveCategoryDelegate.swift */; };
+		AFA512AC2A0E59DC005F5DDB /* addNewCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512AB2A0E59DC005F5DDB /* addNewCategory.swift */; };
 		AFA512AE2A0E65AF005F5DDB /* TrackerCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512AD2A0E65AF005F5DDB /* TrackerCellDelegate.swift */; };
 		AFA512B02A0E6A3B005F5DDB /* HeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA512AF2A0E6A3B005F5DDB /* HeaderViewCell.swift */; };
 		AFE3486529FFE8AD00BF4834 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE3486429FFE8AD00BF4834 /* Tracker.swift */; };
@@ -44,7 +45,6 @@
 		AFE3486C2A00356300BF4834 /* NewRegularWontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE3486B2A00356300BF4834 /* NewRegularWontViewController.swift */; };
 		AFE3486E2A0058B800BF4834 /* UIButton+Extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE3486D2A0058B800BF4834 /* UIButton+Extention.swift */; };
 		AFE348712A005FEC00BF4834 /* NewIrregularEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE348702A005FEC00BF4834 /* NewIrregularEventViewController.swift */; };
-		AFE348782A0411C600BF4834 /* CategotyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE348772A0411C600BF4834 /* CategotyViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +65,7 @@
 		AF679CEA2A07D196009C0C52 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		AF679CEC2A07F5F5009C0C52 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		AF679CF02A0B021F009C0C52 /* SectionHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderReusableView.swift; sourceTree = "<group>"; };
+		AF75B8892A16502B004E8056 /* AddNewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewCategoryViewController.swift; sourceTree = "<group>"; };
 		AFA5128D2A0BB7EA005F5DDB /* EmojiCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionCell.swift; sourceTree = "<group>"; };
 		AFA5128F2A0BBA69005F5DDB /* ColorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionCell.swift; sourceTree = "<group>"; };
 		AFA512912A0BE953005F5DDB /* CategoryCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionCell.swift; sourceTree = "<group>"; };
@@ -78,7 +79,7 @@
 		AFA512A52A0E3B8D005F5DDB /* Weekday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekday.swift; sourceTree = "<group>"; };
 		AFA512A72A0E574D005F5DDB /* ScheduleTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCellDelegate.swift; sourceTree = "<group>"; };
 		AFA512A92A0E577C005F5DDB /* SaveScheduleListDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveScheduleListDelegate.swift; sourceTree = "<group>"; };
-		AFA512AB2A0E59DC005F5DDB /* SaveCategoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveCategoryDelegate.swift; sourceTree = "<group>"; };
+		AFA512AB2A0E59DC005F5DDB /* addNewCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addNewCategory.swift; sourceTree = "<group>"; };
 		AFA512AD2A0E65AF005F5DDB /* TrackerCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellDelegate.swift; sourceTree = "<group>"; };
 		AFA512AF2A0E6A3B005F5DDB /* HeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewCell.swift; sourceTree = "<group>"; };
 		AFE3486429FFE8AD00BF4834 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
@@ -87,7 +88,6 @@
 		AFE3486B2A00356300BF4834 /* NewRegularWontViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRegularWontViewController.swift; sourceTree = "<group>"; };
 		AFE3486D2A0058B800BF4834 /* UIButton+Extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extention.swift"; sourceTree = "<group>"; };
 		AFE348702A005FEC00BF4834 /* NewIrregularEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewIrregularEventViewController.swift; sourceTree = "<group>"; };
-		AFE348772A0411C600BF4834 /* CategotyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategotyViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,7 +191,7 @@
 				AF08C12A29F5DB3600FE3B21 /* SceneDelegate.swift */,
 				AFA512A72A0E574D005F5DDB /* ScheduleTableViewCellDelegate.swift */,
 				AFA512A92A0E577C005F5DDB /* SaveScheduleListDelegate.swift */,
-				AFA512AB2A0E59DC005F5DDB /* SaveCategoryDelegate.swift */,
+				AFA512AB2A0E59DC005F5DDB /* addNewCategory.swift */,
 				AFA512AD2A0E65AF005F5DDB /* TrackerCellDelegate.swift */,
 			);
 			path = Delegate;
@@ -292,8 +292,8 @@
 		AFE348792A04602600BF4834 /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				AFE348772A0411C600BF4834 /* CategotyViewController.swift */,
 				AF679CE82A07CC26009C0C52 /* ListCategoryViewController.swift */,
+				AF75B8892A16502B004E8056 /* AddNewCategoryViewController.swift */,
 				AF679CEA2A07D196009C0C52 /* CategoryTableViewCell.swift */,
 			);
 			path = Category;
@@ -382,7 +382,7 @@
 				AF08C14E29F851B700FE3B21 /* TrackersUICollectionCell.swift in Sources */,
 				AFA512AA2A0E577C005F5DDB /* SaveScheduleListDelegate.swift in Sources */,
 				AFA512972A0D0681005F5DDB /* UIFont+Extentions.swift in Sources */,
-				AFE348782A0411C600BF4834 /* CategotyViewController.swift in Sources */,
+				AF75B88A2A16502B004E8056 /* AddNewCategoryViewController.swift in Sources */,
 				AFE3486E2A0058B800BF4834 /* UIButton+Extention.swift in Sources */,
 				AFA512A02A0E2877005F5DDB /* RegularWontTextFieldCell.swift in Sources */,
 				AFA512AE2A0E65AF005F5DDB /* TrackerCellDelegate.swift in Sources */,
@@ -395,7 +395,7 @@
 				AFE3486529FFE8AD00BF4834 /* Tracker.swift in Sources */,
 				AFA512922A0BE953005F5DDB /* CategoryCollectionCell.swift in Sources */,
 				AF679CF12A0B021F009C0C52 /* SectionHeaderReusableView.swift in Sources */,
-				AFA512AC2A0E59DC005F5DDB /* SaveCategoryDelegate.swift in Sources */,
+				AFA512AC2A0E59DC005F5DDB /* addNewCategory.swift in Sources */,
 				AF08C14729F6BF5600FE3B21 /* TrackersViewController.swift in Sources */,
 				AF679CEB2A07D196009C0C52 /* CategoryTableViewCell.swift in Sources */,
 				AFA5129C2A0D8133005F5DDB /* ScheduleTableViewCell.swift in Sources */,
