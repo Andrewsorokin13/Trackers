@@ -11,7 +11,7 @@ final class RegularWontTextFieldCell: UITableViewCell {
         return textField
     }()
     
-    private lazy var textFieldBackgound: UIView = {
+    private lazy var textFieldBackground: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
@@ -19,7 +19,7 @@ final class RegularWontTextFieldCell: UITableViewCell {
     }()
     
     weak var delegate: SaveTitleReminderDelegate?
-
+    
     //MARK: - Internal func Configuration Cell
     func configurationCell() {
         addUIElements()
@@ -41,21 +41,21 @@ extension RegularWontTextFieldCell: UITextFieldDelegate {
 //MARK: - Set UI elements
 extension RegularWontTextFieldCell {
     private func addUIElements() {
-        contentView.addSubview(textFieldBackgound)
-        textFieldBackgound.addSubview(textField)
+        contentView.addSubview(textFieldBackground)
+        textFieldBackground.addSubview(textField)
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            textFieldBackgound.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            textFieldBackgound.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            textFieldBackgound.topAnchor.constraint(equalTo: contentView.topAnchor),
-            textFieldBackgound.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            textFieldBackground.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            textFieldBackground.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            textFieldBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
+            textFieldBackground.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            textField.leadingAnchor.constraint(equalTo: textFieldBackgound.leadingAnchor, constant: 10),
-            textField.trailingAnchor.constraint(equalTo: textFieldBackgound.trailingAnchor, constant: -10),
-            textField.topAnchor.constraint(equalTo: textFieldBackgound.topAnchor),
-            textField.bottomAnchor.constraint(equalTo: textFieldBackgound.bottomAnchor),
+            textField.leadingAnchor.constraint(equalTo: textFieldBackground.leadingAnchor, constant: 10),
+            textField.trailingAnchor.constraint(equalTo: textFieldBackground.trailingAnchor, constant: -10),
+            textField.topAnchor.constraint(equalTo: textFieldBackground.topAnchor),
+            textField.bottomAnchor.constraint(equalTo: textFieldBackground.bottomAnchor),
         ])
     }
 }

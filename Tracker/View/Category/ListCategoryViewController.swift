@@ -14,7 +14,7 @@ final class ListCategoryViewController: UIViewController {
             "Добавить категорию",
             borderColor: nil,
             titleColor: .YPWhiteDay,
-            selector: #selector(addNewCategoryVC),
+            selector: #selector(saveCategory),
             target: self,
             cornerRadius: 16,
             borderWidth: nil,
@@ -33,9 +33,8 @@ final class ListCategoryViewController: UIViewController {
     
     //MARK: - Objc func
     @objc
-    private func addNewCategoryVC() {
+    private func saveCategory() {
         delegate?.saveNewCategory(category: nameCategory)
-        print(nameCategory)
         dismiss(animated: true)
     }
     
@@ -112,7 +111,7 @@ extension ListCategoryViewController {
             categoryTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             categoryTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             categoryTableView.bottomAnchor.constraint(equalTo: newCategoryButton.topAnchor),
-            
+            //
             newCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             newCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             newCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 16),

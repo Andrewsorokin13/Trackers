@@ -299,7 +299,6 @@ private extension TrackersViewController {
         headerView.addSubview(addTrackerButton)
         headerView.addSubview(datePicker)
         headerView.addSubview(SearchHorizontalStackView)
-        
         //Search StackView
         SearchHorizontalStackView.addArrangedSubview(searchTextField)
         SearchHorizontalStackView.addArrangedSubview(cancelsearchTextFieldButton)

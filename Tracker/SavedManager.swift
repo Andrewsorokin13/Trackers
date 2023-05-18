@@ -38,8 +38,18 @@ final class MocSaveManager {
                                     schedule: [Weekday.Thursday]),
                             
                             Tracker(id: UUID(),
-                                    title: "Tracker[17222:1798608] [Snapshot",
+                                    title: "У эмоджи нет фона",
                                     color: .purple,
+                                    emoji: Constant.CollectionItems.emojiArray.randomElement(),
+                                    schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday]),
+                            Tracker(id: UUID(),
+                                    title: "В макете высота ячейки меньше",
+                                    color: .darkGray,
+                                    emoji: Constant.CollectionItems.emojiArray.randomElement(),
+                                    schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday]),
+                            Tracker(id: UUID(),
+                                    title: "Свидания в апреле",
+                                    color: .YPGray,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
                                     schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday])
                         ])

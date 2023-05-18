@@ -57,7 +57,7 @@ extension AddNewCategoryViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-
+    
 }
 
 //MARK: - Set UI elements

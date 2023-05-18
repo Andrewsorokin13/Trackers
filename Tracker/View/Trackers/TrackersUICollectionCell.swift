@@ -54,14 +54,11 @@ final class TrackersUICollectionCell: UICollectionViewCell {
     
     private lazy var plusButton: UIButton = {
         let button = UIButton(type: .system)
-        let pointSize = UIImage.SymbolConfiguration(pointSize: 10)
-        let image = UIImage(systemName: "testPlusButton", withConfiguration: pointSize)
         button.addTarget(self, action:  #selector(buttonTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.widthAnchor.constraint(equalToConstant: 34).isActive = true
         button.heightAnchor.constraint(equalToConstant: 34).isActive = true
         button.tintColor = .YPWhiteDay
-        button.setImage(image, for: .normal)
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
         return button
@@ -157,8 +154,8 @@ private extension TrackersUICollectionCell {
             //
             emojiLabel.leadingAnchor.constraint(equalTo: taskView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: taskView.topAnchor, constant: 12),
-            emojiLabel.widthAnchor.constraint(equalToConstant: 24),
-            emojiLabel.heightAnchor.constraint(equalToConstant: 24),
+            emojiLabel.widthAnchor.constraint(equalToConstant: 26),
+            emojiLabel.heightAnchor.constraint(equalToConstant: 26),
             
             //
             reminderLabel.leadingAnchor.constraint(equalTo: emojiLabel.leadingAnchor),

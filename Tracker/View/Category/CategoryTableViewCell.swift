@@ -2,19 +2,18 @@ import UIKit
 
 class CategoryTableViewCell: UITableViewCell {
     
+    //MARK: - Static id
     static var reuseIdentifier: String {
         return String(describing: CategoryTableViewCell.self)
     }
-    
+    //MARK: - UI elements
     private lazy var categoryName: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         return label
     }()
-
-    private var isCheckmark = false
-
+    
+    //MARK: - Internal func Configuration Cell
     func config(label: String) {
         addUIElements()
         setConstraint()
@@ -22,6 +21,7 @@ class CategoryTableViewCell: UITableViewCell {
     }
 }
 
+//MARK: - Set UI elements
 extension CategoryTableViewCell {
     private func addUIElements() {
         contentView.addSubview(categoryName)

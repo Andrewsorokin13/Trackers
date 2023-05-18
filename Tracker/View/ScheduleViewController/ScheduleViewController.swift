@@ -9,12 +9,12 @@ final class ScheduleViewController: UIViewController {
         return table
     }()
     
-    private lazy var newCategoryButton: UIButton = {
+    private lazy var scheduleButton: UIButton = {
         UIButton.customButton(
             "Готово",
             borderColor: nil,
             titleColor: .YPWhiteDay,
-            selector: #selector(addNewCategoryVC),
+            selector: #selector(addNewScheduleWeekday),
             target: self,
             cornerRadius: 16,
             borderWidth: nil,
@@ -27,7 +27,7 @@ final class ScheduleViewController: UIViewController {
     weak var delegate: SaveScheduleListDelegate?
     
     @objc
-    private func addNewCategoryVC() {
+    private func addNewScheduleWeekday() {
         delegate?.saveSchedule(category: selectedWeekDay)
         dismiss(animated: true)
     }
@@ -86,7 +86,7 @@ private extension ScheduleViewController {
     
     private func addUIElement() {
         view.addSubview(scheduleTableView)
-        scheduleTableView.addSubview(newCategoryButton)
+        scheduleTableView.addSubview(scheduleButton)
         view.backgroundColor = .YPWhiteDay
         navigationItem.title = "Расписание"
     }
@@ -97,11 +97,12 @@ private extension ScheduleViewController {
             scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scheduleTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             //
-            newCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            newCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            newCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            newCategoryButton.heightAnchor.constraint(equalToConstant: 60)
+            scheduleButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            scheduleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scheduleButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            scheduleButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
 }

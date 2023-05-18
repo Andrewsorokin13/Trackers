@@ -36,13 +36,13 @@ final class RegularWontCategoryCell: UITableViewCell {
     func configurationCell(text: String?, detail: String?) {
         addUIElement()
         setConstraints()
-
+        
         contentView.backgroundColor = .YPBackgroundDay
         guard let text = text else { return }
         titleLabel.text = text
         guard let detail = detail else { return  }
         detailLable.text = detail
-         
+        
     }
 }
 

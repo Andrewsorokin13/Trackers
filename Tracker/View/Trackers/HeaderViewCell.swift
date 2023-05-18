@@ -25,7 +25,7 @@ final class HeaderViewCell: UICollectionReusableView {
     private func addUIElement(){
         addSubview(title)
         title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 10).isActive = true
-        title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true
+        title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28).isActive = true
         title.heightAnchor.constraint(equalToConstant: 20).isActive = true
         title.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
