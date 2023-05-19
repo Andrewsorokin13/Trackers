@@ -4,45 +4,75 @@ import UIKit
 final class MocSaveManager {
     static let shared = MocSaveManager()
     
+    static let didChangeNotification = Notification.Name("MocSaveManagerDidChange")
+    
     private init() {}
     
-    var trackerCategory: [TrackerCategory] = [
+    private var trackerCategory: [TrackerCategory] = [
         TrackerCategory(header: "Первая категория",
-                        tracer: [
+                        tracker: [
                             Tracker(id: UUID(),
                                     title: "Выполните задачу в Xcode",
                                     color: .YPRed,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
-                                    schedule: [Weekday.monday]),
-
+                                    schedule: [Weekday.Monday]),
+                            
                             Tracker(id: UUID(),
-                                    title: "После проверки по чек-листу залейте готовую задачу в ваш проект на GitHub в отдельную ветку с названием sprint_14",
+                                    title: "Выполнить sprint_14",
                                     color: .YPGray,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
-                                    schedule: [Weekday.monday]),
-
+                                    schedule: [Weekday.Monday]),
+                            
                             Tracker(id: UUID(),
                                     title: "Создайте Pull Request (ПР) и скопируйте ссылку на него",
                                     color: .YPBlue,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
-                                    schedule: [Weekday.monday])
+                                    schedule: [Weekday.Saturday])
                         ]),
         TrackerCategory(header: "Вторая категория",
-                        tracer:[
+                        tracker:[
                             Tracker(id: UUID(),
-                                    title: "Приложение должно поддерживать устройства iPhone с iOS 13.4 или выше.",
+                                    title: "iPhone с iOS 13.4 или выше.",
                                     color: .brown,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
-                                    schedule: [Weekday.monday]),
-
+                                    schedule: [Weekday.Thursday]),
+                            
                             Tracker(id: UUID(),
-                                    title: "Tracker[17222:1798608] [Snapshot",
+                                    title: "У эмоджи нет фона",
                                     color: .purple,
                                     emoji: Constant.CollectionItems.emojiArray.randomElement(),
-                                    schedule: [Weekday.monday])
+                                    schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday]),
+                            Tracker(id: UUID(),
+                                    title: "В макете высота ячейки меньше",
+                                    color: .darkGray,
+                                    emoji: Constant.CollectionItems.emojiArray.randomElement(),
+                                    schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday]),
+                            Tracker(id: UUID(),
+                                    title: "Свидания в апреле",
+                                    color: .YPGray,
+                                    emoji: Constant.CollectionItems.emojiArray.randomElement(),
+                                    schedule: [Weekday.Wednesday, Weekday.Thursday, Weekday.Friday])
                         ])
     ]
     
+    func readTrackerCategory() -> [TrackerCategory] {
+        trackerCategory
+    }
+    
+    func saveNewTracker(category: String, tracker: Tracker ) {
+        let index = trackerCategory.firstIndex { $0.header == category }
+        guard let index = index else {
+            trackerCategory.append(
+                TrackerCategory(header: category, tracker: [ tracker ] )
+            )
+            NotificationCenter.default.post(name: MocSaveManager.didChangeNotification,
+                                            object: self,
+                                            userInfo: ["tracker": trackerCategory])
+            return
+        }
+        trackerCategory[index].addTracker(tracker)
+        NotificationCenter.default.post(name: MocSaveManager.didChangeNotification,
+                                        object: self,
+                                        userInfo: ["tracker": trackerCategory])
+    }
 }
-
-

@@ -27,7 +27,7 @@ final class RegularWontCategoryCell: UITableViewCell {
     private lazy var accessoryImageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(systemName:  "chevron.right")
+        image.image = UIImage(systemName: "chevron.right")
         image.tintColor = UIColor.lightGray.withAlphaComponent(0.7)
         return image
     }()
@@ -36,13 +36,13 @@ final class RegularWontCategoryCell: UITableViewCell {
     func configurationCell(text: String?, detail: String?) {
         addUIElement()
         setConstraints()
-
-        contentView.backgroundColor = .YPLightGray
+        
+        contentView.backgroundColor = .YPBackgroundDay
         guard let text = text else { return }
         titleLabel.text = text
         guard let detail = detail else { return  }
         detailLable.text = detail
-         
+        
     }
 }
 

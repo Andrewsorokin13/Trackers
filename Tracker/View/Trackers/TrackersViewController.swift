@@ -48,7 +48,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var addTrackerButton: UIButton = {
-        let button = UIButton.systemButton(with: UIImage(systemName: "plus")!, target: self, action: #selector(addNewTracker))
+        let button = UIButton.systemButton(with: UIImage(named: "customPlusButton")!, target: self, action: #selector(addNewTracker))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .YPBlackDay
         return button
@@ -109,6 +109,7 @@ final class TrackersViewController: UIViewController {
     private var category: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var currentDate: Date?
+    private var trackerMockManagerObserver: NSObjectProtocol?
     
     
     override func viewDidLoad() {
@@ -116,6 +117,15 @@ final class TrackersViewController: UIViewController {
         addElement()
         settingsCollectionView()
         setConstraint()
+        
+        
+        trackerMockManagerObserver = NotificationCenter.default.addObserver(forName: MocSaveManager.didChangeNotification,
+                                                                            object: nil,
+                                                                            queue: .main,
+                                                                            using: { [weak self ] _ in
+            guard let self = self else { return }
+            self.reloadData()
+        })
         isNotification()
     }
     
@@ -128,30 +138,22 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func filterselectDate() {
-        //
+        filterCategory()
     }
     
-    private func completeTracker(id: UUID) -> Bool {
-        completedTrackers.contains { tracker in
-            let day = Calendar.current.isDate(tracker.date, inSameDayAs: datePicker.date)
-            return tracker.id == id && day
-        }
-    }
     private func isNotification() {
         if category.isEmpty {
-            showNotificationView(imagename: "emptyCollection", title: "Что будем отслеживать?")
+            showNotificationView(imageName: "emptyCollection", title: "Что будем отслеживать?")
         }else if filteredСategories.isEmpty  {
-            showNotificationView(imagename: "emptyCollection", title: "Ничего не найдено")
+            showNotificationView(imageName: "emptyFilterCollection", title: "Ничего не найдено")
         } else  {
             notificationView.isHidden = true
         }
     }
     
-    
-    
-    private func showNotificationView(imagename: String, title: String) {
+    private func showNotificationView(imageName: String, title: String) {
         notificationView.isHidden = false
-        infoImageView.image = UIImage(named: imagename)
+        infoImageView.image = UIImage(named: imageName)
         infoLabel.text = title
     }
 }
@@ -160,27 +162,43 @@ final class TrackersViewController: UIViewController {
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        filterForText(text: searchTextField.text)
-        
+        filterCategory()
         return true
     }
-
     
-    private func filterForText(text: String?) {
-        guard let text = text else { return }
+    private func filterCategory() {
+        let calendar = Calendar.current
+        let selectDay = calendar.component(.weekday, from: datePicker.date)
+        let text = searchTextField.text?.lowercased() ?? ""
+        
         filteredСategories = category.compactMap { category in
-            let trackers = category.tracer.filter { tracker in
-                let t = text.isEmpty || tracker.title.lowercased().contains(text.lowercased())
-                return t
+            let tracker = category.tracker.filter { tracker in
+                let filterTextField = text.isEmpty || tracker.title.lowercased().contains(text)
+                let filterDatePicker = tracker.schedule?.contains{
+                    $0.weekNumber == selectDay
+                } == true
+                
+                return filterTextField && filterDatePicker
             }
-            if trackers.isEmpty {
+            
+            if tracker.isEmpty {
                 return nil
             }
             
-            return TrackerCategory(header: category.header, tracer: trackers)
+            return  TrackerCategory(header: category.header,
+                                    tracker: tracker )
         }
-        isNotification()
         collectionView.reloadData()
+        isNotification()
+    }
+    
+    private func isTrackerCompleted(id: UUID) -> Bool {
+        let calendar = Calendar.current
+        return completedTrackers.contains { tracker in
+            let date = calendar.isDate(tracker.date, inSameDayAs: datePicker.date)
+            let id = tracker.id == id
+            return id && date
+        }
     }
 }
 
@@ -196,8 +214,8 @@ extension TrackersViewController {
     }
     
     private func reloadData() {
-        category = mocManager.trackerCategory
-        filteredСategories = category
+        category = mocManager.readTrackerCategory()
+        filterselectDate()
         collectionView.reloadData()
         isNotification()
     }
@@ -206,16 +224,17 @@ extension TrackersViewController {
 //MARK: - Conform UICollectionViewDelegate & UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredСategories[section].tracer.count
+        return filteredСategories[section].tracker.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersUICollectionCell.reuseIdentifier, for: indexPath) as? TrackersUICollectionCell
         else { return UICollectionViewCell() }
-        let data = filteredСategories[indexPath.section].tracer
+        let data = filteredСategories[indexPath.section].tracker
         let tracker = data[indexPath.row]
+        let completedDay = completedTrackers.filter{ $0.id == tracker.id}.count
         cell.delegate = self
-        cell.cellConfigurate(tracker: tracker, isComplete: completeTracker(id: tracker.id), indexPath: indexPath)
+        cell.cellConfigurate(tracker: tracker, isComplete: isTrackerCompleted(id: tracker.id), indexPath: indexPath,  completedDay: completedDay)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -253,8 +272,10 @@ extension TrackersViewController: TrackerCellDelegate {
 //MARK: - Conform UICollectionViewDelegateFlowLayout
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 180, height: 180)
+        let width = collectionView.frame.width / 2.2
+        return CGSize(width: width , height: 132)
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let width = collectionView.frame.width
         return CGSize(width: width, height: 30)
@@ -278,7 +299,6 @@ private extension TrackersViewController {
         headerView.addSubview(addTrackerButton)
         headerView.addSubview(datePicker)
         headerView.addSubview(SearchHorizontalStackView)
-        
         //Search StackView
         SearchHorizontalStackView.addArrangedSubview(searchTextField)
         SearchHorizontalStackView.addArrangedSubview(cancelsearchTextFieldButton)
@@ -293,12 +313,12 @@ private extension TrackersViewController {
             headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
             
             //Add Tracker Button
-            addTrackerButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 4),
+            addTrackerButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             addTrackerButton.topAnchor.constraint(equalTo: headerView.topAnchor),
             
             //Header Title Lable
             titleLable.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-            titleLable.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 21),
+            titleLable.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 13),
             
             //Date Picker
             datePicker.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
@@ -310,7 +330,7 @@ private extension TrackersViewController {
             SearchHorizontalStackView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             SearchHorizontalStackView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
             SearchHorizontalStackView.heightAnchor.constraint(equalToConstant: 30),
-            SearchHorizontalStackView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -10),
+            SearchHorizontalStackView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 7),
             
             //CollectionView
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

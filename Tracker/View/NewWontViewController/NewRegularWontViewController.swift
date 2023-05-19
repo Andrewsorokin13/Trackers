@@ -1,7 +1,7 @@
 import UIKit
 
 final class NewRegularWontViewController: UIViewController{
- 
+    
     //MARK: - UI elements
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -46,8 +46,8 @@ final class NewRegularWontViewController: UIViewController{
     private let mocManager = MocSaveManager.shared
     private let main = Constant.NewWontVCStaticLet.listCount
     private var textInTextField: String?
-    private var scheduleArray = Set<String>()
-    private var categoryArray = Set<String>()
+    private var scheduleArray = [Weekday]()
+    private var setCategory = ""
     
     //MARK: - Override func
     override func viewDidLoad() {
@@ -66,21 +66,25 @@ final class NewRegularWontViewController: UIViewController{
     
     @objc
     private func saveNewRegularWont() {
-        dismiss(animated: true)
+        let tracker = createNewTracker(title: textInTextField ?? "", schedule: scheduleArray)
+        mocManager.saveNewTracker(category: setCategory, tracker: tracker)
+        dismiss(animated: false)
     }
     
     //MARK: - Private func
-    private func createNewTracker() -> Tracker {
+    private func createNewTracker(title: String, schedule: [Weekday]) -> Tracker {
         let color =  (1...18).map { "\($0)" }
         let string =  color.randomElement()
-        return Tracker(id: UUID(), title: "", color: UIColor(named: string!)!, emoji: "🎈", schedule: [Weekday.monday])
+        let emoji = Constant.CollectionItems.emojiArray.randomElement()
+        return Tracker(id: UUID(), title: title, color: UIColor(named: string!) ?? .YPLightGray, emoji: emoji, schedule: schedule)
     }
     
-    private func convertArraytoString(array: Set<String>) -> String {
-        return array.joined(separator: ",")
+    private func convertArraytoString(array: [Weekday]) -> String {
+        let filter = array.map { $0.shortName }
+        return filter.joined(separator: ", ")
     }
     
-
+    
     private func configureTableView() {
         view.addSubview(tableView)
         tableView.register(RegularWontTextFieldCell.self, forCellReuseIdentifier: "cell")
@@ -92,18 +96,27 @@ final class NewRegularWontViewController: UIViewController{
     }
 }
 
-//MARK: - Conform SaveScheduleListDelegate & SaveCategoryDelegate
-extension NewRegularWontViewController: SaveScheduleListDelegate, SaveCategoryDelegate {
-    
-    func saveCategory(category: String?) {
-        guard let category = category else { return  }
-        categoryArray.insert(category)
+//MARK: - Conform SaveScheduleListDelegate &
+extension NewRegularWontViewController: SaveScheduleListDelegate {
+    func saveSchedule(category: [Weekday]) {
+        scheduleArray = category
         tableView.reloadData()
     }
-    
-    func saveSchedule(category: Set<String>) {
-        self.scheduleArray = category
+}
+
+//MARK: - Conform SaveCategoryDelegate
+extension NewRegularWontViewController: SaveCategoryDelegate {
+    func saveNewCategory(category: String?) {
+        guard let category = category else { return }
+        self.setCategory = category
         tableView.reloadData()
+    }
+}
+
+//MARK: - Conform SaveTitleReminderDelegate
+extension NewRegularWontViewController: SaveTitleReminderDelegate {
+    func saveTitle(title: String?) {
+        self.textInTextField = title ?? "No title"
     }
 }
 
@@ -118,13 +131,12 @@ extension NewRegularWontViewController: UITableViewDelegate, UITableViewDataSour
         case  0:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? RegularWontTextFieldCell  else { return UITableViewCell() }
             cell.configurationCell()
-            cell.contentView.backgroundColor = .YPBackgroundDay
+            cell.delegate = self
             return cell
         default :
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RegularWontCategoryCell.reuseIdentifier, for: indexPath) as? RegularWontCategoryCell  else { return UITableViewCell() }
             if indexPath.row == 0 {
-                let data = convertArraytoString(array: categoryArray)
-                cell.configurationCell(text: main.last?[indexPath.row], detail: "\(data)")
+                cell.configurationCell(text: main.last?[indexPath.row], detail: setCategory)
             }else {
                 let data = convertArraytoString(array: scheduleArray)
                 cell.configurationCell(text: main.last?[indexPath.row], detail: "\(data)")
@@ -135,7 +147,9 @@ extension NewRegularWontViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectVCForIndexPath(indexPath: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         main.count
@@ -148,7 +162,7 @@ extension NewRegularWontViewController: UITableViewDelegate, UITableViewDataSour
             let navigationVC = UINavigationController(rootViewController: vc)
             present(navigationVC, animated: true)
         }else {
-            let vc = CategoryViewController()
+            let vc = ListCategoryViewController()
             vc.delegate = self
             let navigationVC = UINavigationController(rootViewController: vc)
             present(navigationVC, animated: true)
@@ -177,7 +191,6 @@ private extension NewRegularWontViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: horizontalStackBottomButton.topAnchor)
-            
         ])
     }
 }

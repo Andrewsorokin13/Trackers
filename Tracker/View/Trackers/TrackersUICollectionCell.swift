@@ -27,9 +27,11 @@ final class TrackersUICollectionCell: UICollectionViewCell {
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.layer.cornerRadius = 24 / 2
+        label.clipsToBounds = true
         label.font = UIFont.sfProMedium(size: 16)
         label.textAlignment = .center
+        label.backgroundColor = .YPBackgroundDay
+        label.layer.cornerRadius = 12
         return label
     }()
     
@@ -39,6 +41,7 @@ final class TrackersUICollectionCell: UICollectionViewCell {
         label.font = UIFont.sfProMedium(size: 12)
         return label
     }()
+     
     
     private lazy var timeTrackerHorizontalStack: UIStackView = {
         let stackView = UIStackView()
@@ -50,9 +53,8 @@ final class TrackersUICollectionCell: UICollectionViewCell {
     }()
     
     private lazy var plusButton: UIButton = {
-        let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
-        let image = UIImage(systemName: "plus", withConfiguration: pointSize)
-        let button = UIButton.systemButton(with: image!, target: self, action:  #selector(buttonTap))
+        let button = UIButton(type: .system)
+        button.addTarget(self, action:  #selector(buttonTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.widthAnchor.constraint(equalToConstant: 34).isActive = true
         button.heightAnchor.constraint(equalToConstant: 34).isActive = true
@@ -77,7 +79,7 @@ final class TrackersUICollectionCell: UICollectionViewCell {
         }
     }
     
-    func cellConfigurate(tracker: Tracker, isComplete: Bool, indexPath: IndexPath) {
+    func cellConfigurate(tracker: Tracker, isComplete: Bool, indexPath: IndexPath, completedDay: Int) {
         addUIElemets()
         setconstraints()
         self.trackerID = tracker.id
@@ -89,15 +91,42 @@ final class TrackersUICollectionCell: UICollectionViewCell {
         plusButton.backgroundColor = taskBackgroundColor
         reminderLabel.text = tracker.title
         emojiLabel.text = tracker.emoji ?? ""
-        let day = (1...5).randomElement()
         
-        dayLabel.text = "\(day!) дней"
-        let image = isComleteReminder ? UIImage(systemName: "checkmark") : UIImage(systemName: "plus")
+        
+        dayLabel.text = nameDays(completedDay)
+        
+        let image = setImageButton(isComleteReminder)
+        let alpha = isComleteReminder ? 0.5 : 1
         plusButton.setImage(image, for: .normal)
+        plusButton.alpha = alpha
     }
     
+ 
+   
+    private func setImageButton(_ isComleteReminder: Bool) -> UIImage {
+        let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
+        let imagePlus = UIImage(systemName: "plus", withConfiguration: pointSize)
+        let imageCheckmark = UIImage(systemName: "checkmark", withConfiguration: pointSize)
+        let image = isComleteReminder ? imageCheckmark : imagePlus
+        guard let image = image else { return UIImage() }
+        
+        return image
+    }
+    
+    private func nameDays(_ count: Int) -> String {
+      let singular = count % 10
+      let plural = count % 100
+    
+        if singular == 1 && plural != 11 {
+            return "\(count) день"
+        } else if singular >= 2 && singular <= 4 {
+            return "\(count) дня"
+        } else {
+            return "\(count) дней"
+        }
+    }
+   
 }
-
 
 //MARK: - Set UI elements
 private extension TrackersUICollectionCell {
@@ -109,6 +138,7 @@ private extension TrackersUICollectionCell {
         taskView.addSubview(emojiLabel)
         taskView.addSubview(reminderLabel)
         //
+        
         timeTrackerHorizontalStack.addArrangedSubview(dayLabel)
         timeTrackerHorizontalStack.addArrangedSubview(plusButton)
     }
@@ -119,22 +149,23 @@ private extension TrackersUICollectionCell {
             taskView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             taskView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             taskView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            taskView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.8),
+            taskView.heightAnchor.constraint(equalToConstant: 90),
             
             //
             emojiLabel.leadingAnchor.constraint(equalTo: taskView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: taskView.topAnchor, constant: 12),
-            emojiLabel.widthAnchor.constraint(equalToConstant: 24),
-            emojiLabel.heightAnchor.constraint(equalToConstant: 24),
+            emojiLabel.widthAnchor.constraint(equalToConstant: 26),
+            emojiLabel.heightAnchor.constraint(equalToConstant: 26),
             
             //
             reminderLabel.leadingAnchor.constraint(equalTo: emojiLabel.leadingAnchor),
-            reminderLabel.trailingAnchor.constraint(equalTo: taskView.trailingAnchor),
+            reminderLabel.trailingAnchor.constraint(equalTo: taskView.trailingAnchor, constant: -12),
             reminderLabel.bottomAnchor.constraint(equalTo: taskView.bottomAnchor, constant: -10),
+            reminderLabel.heightAnchor.constraint(equalToConstant: 34),
             
-            timeTrackerHorizontalStack.leadingAnchor.constraint(equalTo: emojiLabel.leadingAnchor),
-            timeTrackerHorizontalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            timeTrackerHorizontalStack.topAnchor.constraint(equalTo: taskView.bottomAnchor, constant: 2),
+            timeTrackerHorizontalStack.leadingAnchor.constraint(equalTo: emojiLabel.leadingAnchor,constant: 12),
+            timeTrackerHorizontalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            timeTrackerHorizontalStack.topAnchor.constraint(equalTo: taskView.bottomAnchor, constant: 8),
             timeTrackerHorizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             
         ])

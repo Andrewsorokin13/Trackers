@@ -1,6 +1,7 @@
 import UIKit
 
-class CategoryViewController: UIViewController {
+final class  AddNewCategoryViewController: UIViewController {
+    
     //MARK: - UI Elements
     private lazy var textFieldBackgroundView: UIView = {
         let view = UIView()
@@ -10,7 +11,7 @@ class CategoryViewController: UIViewController {
         return view
     }()
     
-    private lazy var textField: UITextField = {
+    private lazy var categoryTextfield: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.textColor = .YPBlackDay
@@ -35,11 +36,11 @@ class CategoryViewController: UIViewController {
     }()
     
     //MARK: - Delegate
-    weak var delegate: SaveCategoryDelegate?
+    weak var delegate: AddNewCategoryDelegate?
     
     @objc
     private func saveCategory() {
-        delegate?.saveCategory(category: textField.text)
+        delegate?.addNewCategoryToListCategory(category: categoryTextfield.text)
         dismiss(animated: true)
     }
     
@@ -51,21 +52,22 @@ class CategoryViewController: UIViewController {
 }
 
 //MARK: - Conform UITextFieldDelegate
-extension CategoryViewController: UITextFieldDelegate {
+extension AddNewCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
+    
 }
 
 //MARK: - Set UI elements
-private extension CategoryViewController {
+private extension AddNewCategoryViewController {
     private func addUIElement() {
         view.backgroundColor = .YPWhiteDay
         view.addSubview(textFieldBackgroundView)
         view.addSubview(completeButton)
         
-        textFieldBackgroundView.addSubview(textField)
+        textFieldBackgroundView.addSubview(categoryTextfield)
         navigationItem.title = "Новая категория"
     }
     
@@ -77,10 +79,10 @@ private extension CategoryViewController {
             textFieldBackgroundView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             textFieldBackgroundView.heightAnchor.constraint(equalToConstant: 75),
             //
-            textField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: 8),
-            textField.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -8),
-            textField.topAnchor.constraint(equalTo: textFieldBackgroundView.topAnchor),
-            textField.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor),
+            categoryTextfield.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: 8),
+            categoryTextfield.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -8),
+            categoryTextfield.topAnchor.constraint(equalTo: textFieldBackgroundView.topAnchor),
+            categoryTextfield.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor),
             //
             completeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             completeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -88,4 +90,5 @@ private extension CategoryViewController {
             completeButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
+    
 }

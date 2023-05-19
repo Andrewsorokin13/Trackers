@@ -9,12 +9,12 @@ final class ScheduleViewController: UIViewController {
         return table
     }()
     
-    private lazy var newCategoryButton: UIButton = {
+    private lazy var scheduleButton: UIButton = {
         UIButton.customButton(
             "Готово",
             borderColor: nil,
             titleColor: .YPWhiteDay,
-            selector: #selector(addNewCategoryVC),
+            selector: #selector(addNewScheduleWeekday),
             target: self,
             cornerRadius: 16,
             borderWidth: nil,
@@ -22,12 +22,12 @@ final class ScheduleViewController: UIViewController {
     }()
     
     //MARK: - Private property
-    private let tableData = Constant.ScheduleTableView.weekDayArray
-    private var selectedWeekDay: Set<String> = []
+    private let weekday = Weekday.allCases
+    private var selectedWeekDay = [Weekday]()
     weak var delegate: SaveScheduleListDelegate?
     
     @objc
-    private func addNewCategoryVC() {
+    private func addNewScheduleWeekday() {
         delegate?.saveSchedule(category: selectedWeekDay)
         dismiss(animated: true)
     }
@@ -42,12 +42,13 @@ final class ScheduleViewController: UIViewController {
 
 //MARK: - Conform ScheduleTableViewCellDelegate
 extension ScheduleViewController: ScheduleTableViewCellDelegate {
-    func saveWeekDay(day: String) {
-        selectedWeekDay.insert(day)
+    func saveWeekDay(day: Weekday) {
+        selectedWeekDay.append(day)
     }
     
-    func deleteWeekDay(day: String) {
-        selectedWeekDay.remove(day)
+    func deleteWeekDay(day: Weekday) {
+        guard let index = selectedWeekDay.firstIndex(of: day) else { return }
+        selectedWeekDay.remove(at: index)
     }
 }
 
@@ -55,7 +56,7 @@ extension ScheduleViewController: ScheduleTableViewCellDelegate {
 //MARK: - Conform UITableViewDelegate & UITableViewDataSource
 extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tableData.count
+        weekday.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -63,7 +64,7 @@ extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let data = tableData[indexPath.row]
+        let data = weekday[indexPath.row]
         let cell = scheduleTableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.reuseIdentifier, for: indexPath) as! ScheduleTableViewCell
         cell.configurationCell(title: data)
         cell.delegate = self
@@ -80,11 +81,12 @@ private extension ScheduleViewController {
         scheduleTableView.delegate = self
         scheduleTableView.rowHeight = 75
         scheduleTableView.backgroundColor = .YPWhiteDay
+        scheduleTableView.allowsSelection = false
     }
     
     private func addUIElement() {
         view.addSubview(scheduleTableView)
-        scheduleTableView.addSubview(newCategoryButton)
+        scheduleTableView.addSubview(scheduleButton)
         view.backgroundColor = .YPWhiteDay
         navigationItem.title = "Расписание"
     }
@@ -95,11 +97,12 @@ private extension ScheduleViewController {
             scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scheduleTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             //
-            newCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            newCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            newCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            newCategoryButton.heightAnchor.constraint(equalToConstant: 60)
+            scheduleButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            scheduleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scheduleButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            scheduleButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
 }
