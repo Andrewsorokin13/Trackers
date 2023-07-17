@@ -55,7 +55,6 @@ final class TrackerStore: NSObject {
         try? fetchedResultsController.performFetch()
     }
     
-  
     private func addNewTrackerAndCategory(_ tracker: Tracker, header: String) {
         let trackerCoreData = TrackerCoreData(context: context)
         let trackerCategoryCoreData = CategoryTrackerCoreData(context: context)

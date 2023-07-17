@@ -222,6 +222,7 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
         collectionView.reloadData()
     }
 }
+
 //MARK: - Conform UICollectionViewDelegate & UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
