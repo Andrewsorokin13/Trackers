@@ -4,11 +4,10 @@ protocol ReloadCoolectionView: AnyObject {
     func reloadCollection()
 }
 
-
 final class CreateTracker: UIViewController {
     
     //MARK: - UI elements
-    private lazy var createWontButtun: UIButton = {
+    private lazy var createWontButton: UIButton = {
         UIButton.systemButton(with: UIImage(), target: self, action: #selector(newRegularWont))
     }()
     
@@ -16,55 +15,55 @@ final class CreateTracker: UIViewController {
         UIButton.systemButton(with: UIImage(), target: self, action: #selector(newIrregularEvent))
     }()
     
-    private lazy var titleLable: UILabel = {
+    private lazy var titleLabel: UILabel = {
         UILabel()
     }()
-    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addUIElements()
         setConstraint()
-       
     }
     
     //MARK: - Action button
     @objc
     private func newRegularWont() {
-        let vc = NewRegularWontViewController()
+        let vc = EventViewController()
+        let eventViewModel = EventViewModel(model: Constant.Event.newRegularEvent)
+        vc.setViewModel(viewModel: eventViewModel, title: eventViewModel.title)
         let navigationVC = UINavigationController(rootViewController: vc)
         present(navigationVC, animated: true)
     }
     
     @objc
     private func newIrregularEvent() {
-//        let vc = NewIrregularEventViewController()
-//        let navigationVC = UINavigationController(rootViewController: vc)
-//        present(navigationVC, animated: true)
+        let vc = EventViewController()
+        let eventViewModel = EventViewModel(model: Constant.Event.newIrRegularEvent)
+        vc.setViewModel(viewModel: eventViewModel, title: eventViewModel.title)
+        let navigationVC = UINavigationController(rootViewController: vc)
+        present(navigationVC, animated: true)
     }
 }
 
 //MARK: - Set constraints
 private extension CreateTracker {
     private func addUIElements() {
-        view.addSubview(createWontButtun)
+        view.addSubview(createWontButton)
         view.addSubview(irregularEvent)
-        
         navigationItem.title = "Создание трекера"
         view.backgroundColor = .YPWhiteDay
     }
     
     private func setConstraint() {
         //Create Wont Buttun
-        createWontButtun.translatesAutoresizingMaskIntoConstraints = false
-        createWontButtun.setTitle("Привычка", for: .normal)
-        createWontButtun.titleLabel?.font = UIFont.sfProMedium(size: 16)
-        createWontButtun.backgroundColor = .YPBlackDay
-        createWontButtun.tintColor = .YPWhiteDay
-        createWontButtun.layer.cornerRadius = 16
-        
-        
+        createWontButton.translatesAutoresizingMaskIntoConstraints = false
+        createWontButton.setTitle("Привычка", for: .normal)
+        createWontButton.titleLabel?.font = UIFont.sfProMedium(size: 16)
+        createWontButton.backgroundColor = .YPBlackDay
+        createWontButton.tintColor = .YPWhiteDay
+        createWontButton.layer.cornerRadius = 16
+
         //Create Wont Irregular event
         irregularEvent.translatesAutoresizingMaskIntoConstraints = false
         irregularEvent.setTitle("Нерегулярные событие", for: .normal)
@@ -74,16 +73,16 @@ private extension CreateTracker {
         irregularEvent.layer.cornerRadius = 16
         
         NSLayoutConstraint.activate([
-            
-            createWontButtun.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            createWontButtun.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            createWontButtun.heightAnchor.constraint(equalToConstant: 60),
-            createWontButtun.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
+            //
+            createWontButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            createWontButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            createWontButton.heightAnchor.constraint(equalToConstant: 60),
+            createWontButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            //
             irregularEvent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             irregularEvent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             irregularEvent.heightAnchor.constraint(equalToConstant: 60),
-            irregularEvent.topAnchor.constraint(equalTo: createWontButtun.bottomAnchor, constant: 16)
+            irregularEvent.topAnchor.constraint(equalTo: createWontButton.bottomAnchor, constant: 16)
         ])
     }
 }
