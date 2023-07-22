@@ -7,6 +7,7 @@ final class HeaderViewCell: UICollectionReusableView {
         return String(describing: TrackersUICollectionCell.self)
     }
     
+    //MARK: - UI element
     private lazy var title: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -16,12 +17,13 @@ final class HeaderViewCell: UICollectionReusableView {
         return label
     }()
     
-     func configurateHeader(header: String) {
+    //MARK: - Configuration header
+    func configurateHeader(header: String) {
         addUIElement()
         title.text = header
-         
-     }
+    }
     
+    //MARK: - Add ui element
     private func addUIElement(){
         addSubview(title)
         title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 10).isActive = true
@@ -29,5 +31,4 @@ final class HeaderViewCell: UICollectionReusableView {
         title.heightAnchor.constraint(equalToConstant: 20).isActive = true
         title.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
-
 }

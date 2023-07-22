@@ -1,5 +1,9 @@
 import UIKit
 
+protocol testSaveDelegate: AnyObject {
+    func testSave(category: [Weekday])
+}
+
 final class ScheduleViewController: UIViewController {
     
     //MARK: - UI elements
@@ -22,13 +26,13 @@ final class ScheduleViewController: UIViewController {
     }()
     
     //MARK: - Private property
-    private let weekday = Weekday.allCases
-    private var selectedWeekDay = [Weekday]()
+    private let viewModel = ScheduleViewModel()
     weak var delegate: SaveScheduleListDelegate?
     
+    //MARK: - Action button
     @objc
     private func addNewScheduleWeekday() {
-        delegate?.saveSchedule(category: selectedWeekDay)
+        delegate?.saveSchedule(category: viewModel.selectedWeekDay)
         dismiss(animated: true)
     }
     
@@ -40,23 +44,10 @@ final class ScheduleViewController: UIViewController {
     }
 }
 
-//MARK: - Conform ScheduleTableViewCellDelegate
-extension ScheduleViewController: ScheduleTableViewCellDelegate {
-    func saveWeekDay(day: Weekday) {
-        selectedWeekDay.append(day)
-    }
-    
-    func deleteWeekDay(day: Weekday) {
-        guard let index = selectedWeekDay.firstIndex(of: day) else { return }
-        selectedWeekDay.remove(at: index)
-    }
-}
-
-
 //MARK: - Conform UITableViewDelegate & UITableViewDataSource
 extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weekday.count
+        viewModel.numberOfRowsInSection()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -64,12 +55,24 @@ extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let data = weekday[indexPath.row]
-        let cell = scheduleTableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.reuseIdentifier, for: indexPath) as! ScheduleTableViewCell
+        let data = viewModel.getWeekDay(at: indexPath.row)
+        guard let cell = scheduleTableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.reuseIdentifier, for: indexPath) as? ScheduleTableViewCell
+        else { return UITableViewCell() }
         cell.configurationCell(title: data)
         cell.delegate = self
         cell.contentView.backgroundColor = .YPBackgroundDay
         return cell
+    }
+}
+
+//MARK: - Conform ScheduleTableViewCellDelegate
+extension ScheduleViewController: ScheduleTableViewCellDelegate {
+    func saveWeekDay(day: Weekday) {
+        viewModel.saveWeekDay(day: day)
+    }
+    
+    func deleteWeekDay(day: Weekday) {
+        viewModel.deleteWeekDay(day: day)
     }
 }
 
@@ -97,7 +100,6 @@ private extension ScheduleViewController {
             scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scheduleTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
             //
             scheduleButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             scheduleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),

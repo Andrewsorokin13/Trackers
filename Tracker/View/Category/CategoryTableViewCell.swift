@@ -6,6 +6,7 @@ class CategoryTableViewCell: UITableViewCell {
     static var reuseIdentifier: String {
         return String(describing: CategoryTableViewCell.self)
     }
+    
     //MARK: - UI elements
     private lazy var categoryName: UILabel = {
         let label = UILabel()
@@ -14,10 +15,10 @@ class CategoryTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Internal func Configuration Cell
-    func config(label: String) {
+    func configure(with title: String) {
         addUIElements()
         setConstraint()
-        categoryName.text = label
+        categoryName.text = title
     }
 }
 

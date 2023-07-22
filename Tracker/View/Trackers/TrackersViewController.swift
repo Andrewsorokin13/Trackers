@@ -1,6 +1,7 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
+
     //MARK: - UI elements
     private lazy var notificationView: UIView = {
         let view = UIView()
@@ -11,7 +12,6 @@ final class TrackersViewController: UIViewController {
     private lazy var infoImageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        
         return image
     }()
     
@@ -67,7 +67,6 @@ final class TrackersViewController: UIViewController {
         return datePicker
     }()
     
-    
     private lazy var searchTextField: UISearchTextField = {
         let searchTextField = UISearchTextField()
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -76,9 +75,7 @@ final class TrackersViewController: UIViewController {
         searchTextField.layer.cornerRadius = 16
         searchTextField.delegate = self
         searchTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.YPGray
-        ]
+        let attributes = [ NSAttributedString.Key.foregroundColor: UIColor.YPGray ]
         let attributesPlaceholder = NSAttributedString(string: "Поиск", attributes: attributes)
         searchTextField.attributedPlaceholder = attributesPlaceholder
         return searchTextField
@@ -104,31 +101,24 @@ final class TrackersViewController: UIViewController {
     }()
     
     //MARK: Private property
-    private let mocManager = MocSaveManager.shared
     private var filteredСategories: [TrackerCategory] = []
     private var category: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var currentDate: Date?
-    private var trackerMockManagerObserver: NSObjectProtocol?
-    
+ 
+    private let categoryStore = TrackerCategoryStore.shared
+    private let recordStore = TrackerRecordStore.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addElement()
         settingsCollectionView()
         setConstraint()
-        
-        
-        trackerMockManagerObserver = NotificationCenter.default.addObserver(forName: MocSaveManager.didChangeNotification,
-                                                                            object: nil,
-                                                                            queue: .main,
-                                                                            using: { [weak self ] _ in
-            guard let self = self else { return }
-            self.reloadData()
-        })
+        categoryStore.delegate = self
         isNotification()
     }
     
+    //MARK: - Action button
     @objc
     private func addNewTracker() {
         let vc = CreateTracker()
@@ -141,10 +131,11 @@ final class TrackersViewController: UIViewController {
         filterCategory()
     }
     
+    //MARK: - Private method
     private func isNotification() {
         if category.isEmpty {
             showNotificationView(imageName: "emptyCollection", title: "Что будем отслеживать?")
-        }else if filteredСategories.isEmpty  {
+        } else if filteredСategories.isEmpty  {
             showNotificationView(imageName: "emptyFilterCollection", title: "Ничего не найдено")
         } else  {
             notificationView.isHidden = true
@@ -170,7 +161,6 @@ extension TrackersViewController: UITextFieldDelegate {
         let calendar = Calendar.current
         let selectDay = calendar.component(.weekday, from: datePicker.date)
         let text = searchTextField.text?.lowercased() ?? ""
-        
         filteredСategories = category.compactMap { category in
             let tracker = category.tracker.filter { tracker in
                 let filterTextField = text.isEmpty || tracker.title.lowercased().contains(text)
@@ -188,16 +178,20 @@ extension TrackersViewController: UITextFieldDelegate {
             return  TrackerCategory(header: category.header,
                                     tracker: tracker )
         }
-        collectionView.reloadData()
         isNotification()
+        collectionView.reloadData()
     }
     
+    
     private func isTrackerCompleted(id: UUID) -> Bool {
-        let calendar = Calendar.current
-        return completedTrackers.contains { tracker in
-            let date = calendar.isDate(tracker.date, inSameDayAs: datePicker.date)
-            let id = tracker.id == id
-            return id && date
+        guard  let date =  currentDate else {
+            return false
+        }
+        guard let records = try? recordStore.getRecord() else { return false }
+        return records.contains { trackerRecord in
+            currentDate = datePicker.date
+            let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: date)
+            return trackerRecord.id == id && sameDay
         }
     }
 }
@@ -214,10 +208,18 @@ extension TrackersViewController {
     }
     
     private func reloadData() {
-        category = mocManager.readTrackerCategory()
+        category = categoryStore.getTrackerCategory()
         filterselectDate()
         collectionView.reloadData()
         isNotification()
+    }
+}
+
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func store(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
+        category = categoryStore.getTrackerCategory()
+        filterCategory()
+        collectionView.reloadData()
     }
 }
 
@@ -232,9 +234,10 @@ extension TrackersViewController: UICollectionViewDelegate, UICollectionViewData
         else { return UICollectionViewCell() }
         let data = filteredСategories[indexPath.section].tracker
         let tracker = data[indexPath.row]
-        let completedDay = completedTrackers.filter{ $0.id == tracker.id}.count
+        guard let record = try? recordStore.getRecord() else { return UICollectionViewCell() }
+        let completedDay = record.filter{ $0.id == tracker.trackerID}.count
         cell.delegate = self
-        cell.cellConfigurate(tracker: tracker, isComplete: isTrackerCompleted(id: tracker.id), indexPath: indexPath,  completedDay: completedDay)
+        cell.cellConfigurate(tracker: tracker, isComplete: isTrackerCompleted(id: tracker.trackerID), indexPath: indexPath,  completedDay: completedDay)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -255,15 +258,25 @@ extension TrackersViewController: UICollectionViewDelegate, UICollectionViewData
 //MARK: - Conform TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, indexPath: IndexPath) {
-        let tracker = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.append(tracker)
-        collectionView.reloadItems(at: [indexPath])
+        currentDate = datePicker.date
+        let calendar = Calendar.current
+        let toDay = calendar.dateComponents([.year, .month, .day], from: Date())
+        let dateOnCalendar = calendar.dateComponents([.year, .month, .day], from: currentDate!)
+        if let extractedToDay = calendar.date(from: toDay),
+           let extractedCurrentDate = calendar.date(from: dateOnCalendar) {
+            if extractedCurrentDate <= extractedToDay {
+                try? recordStore.addNewRecord(id, date: currentDate!)
+                collectionView.reloadItems(at: [indexPath])
+            }
+        }
     }
     
     func uncopleteTracker(id: UUID, indexPath: IndexPath) {
-        completedTrackers.removeAll { tracker in
-            let day = Calendar.current.isDate(tracker.date, inSameDayAs: datePicker.date)
-            return tracker.id == id && day
+        currentDate = datePicker.date
+        guard let record = try? recordStore.getRecordAtID(trackerID: id) else { return }
+        let sameDay = Calendar.current.isDate(record.date, inSameDayAs: currentDate!)
+        if sameDay {
+            try? recordStore.deleteRecord(id)
         }
         collectionView.reloadItems(at: [indexPath])
     }
@@ -281,7 +294,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width, height: 30)
     }
 }
-
 
 //MARK: - Set UI elements
 private extension TrackersViewController {
@@ -311,45 +323,37 @@ private extension TrackersViewController {
             headerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 13),
             headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15),
-            
             //Add Tracker Button
             addTrackerButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             addTrackerButton.topAnchor.constraint(equalTo: headerView.topAnchor),
-            
             //Header Title Lable
             titleLable.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             titleLable.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 13),
-            
             //Date Picker
             datePicker.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
             datePicker.centerYAnchor.constraint(equalTo: titleLable.centerYAnchor),
             datePicker.heightAnchor.constraint(equalToConstant: 34),
             datePicker.widthAnchor.constraint(equalToConstant: 100),
-            
             //Search StackView
             SearchHorizontalStackView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             SearchHorizontalStackView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
             SearchHorizontalStackView.heightAnchor.constraint(equalToConstant: 30),
             SearchHorizontalStackView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 7),
-            
             //CollectionView
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
             //Info View
             notificationView.widthAnchor.constraint(equalTo: view.widthAnchor),
             notificationView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
             notificationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notificationView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
             //info ImageView
             infoImageView.heightAnchor.constraint(equalToConstant: 80),
             infoImageView.widthAnchor.constraint(equalToConstant: 80),
             infoImageView.centerYAnchor.constraint(equalTo: notificationView.centerYAnchor),
             infoImageView.centerXAnchor.constraint(equalTo: notificationView.centerXAnchor),
-            
             //info Label
             infoLabel.topAnchor.constraint(equalTo: infoImageView.bottomAnchor, constant: 8),
             infoLabel.leadingAnchor.constraint(equalTo: notificationView.leadingAnchor, constant: 16),

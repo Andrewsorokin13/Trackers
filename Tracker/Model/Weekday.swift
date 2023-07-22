@@ -1,13 +1,14 @@
 import Foundation
 
-enum Weekday: CaseIterable {
+enum Weekday: String, CaseIterable {
+    case Sunday
     case Monday
     case Tuesday
     case Wednesday
     case Thursday
     case Friday
     case Saturday
-    case Sunday
+
     
     var fullName: String {
         switch self {
@@ -23,13 +24,13 @@ enum Weekday: CaseIterable {
     
     var weekNumber: Int {
         switch self {
-        case .Monday: return 1
-        case .Tuesday: return 2
-        case .Wednesday: return 3
-        case .Thursday: return 4
-        case .Friday: return 5
-        case .Saturday: return 6
-        case .Sunday: return 7
+        case .Sunday: return 1
+        case .Monday: return 2
+        case .Tuesday: return 3
+        case .Wednesday: return 4
+        case .Thursday: return 5
+        case .Friday: return 6
+        case .Saturday: return 7
         }
     }
     var shortName: String {
